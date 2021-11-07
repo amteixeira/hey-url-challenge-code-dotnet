@@ -9,6 +9,6 @@ namespace HeyUrlChallengeCodeDotnet.Data
         {
         }
 
-        public DbSet<Url> Urls { get; set; }
+        public DbSet<UrlModel> Urls { get; set; }
     }
 }

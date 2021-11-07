@@ -1,3 +1,5 @@
+using hey_url_challenge_code_dotnet.Repository.AuxRepo;
+using hey_url_challenge_code_dotnet.Service;
 using HeyUrlChallengeCodeDotnet.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +24,8 @@ namespace HeyUrlChallengeCodeDotnet
         {
             services.AddBrowserDetection();
             services.AddControllersWithViews();
+            services.AddScoped<AuxRepo>();
+            services.AddTransient<UrlService>();
             services.AddDbContext<ApplicationContext>(options => options.UseInMemoryDatabase(databaseName: "HeyUrl"));
         }
 

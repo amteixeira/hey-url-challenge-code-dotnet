@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using hey_url_challenge_code_dotnet.Models;
+using hey_url_challenge_code_dotnet.Service;
 using hey_url_challenge_code_dotnet.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,37 +15,24 @@ namespace HeyUrlChallengeCodeDotnet.Controllers
         private readonly ILogger<UrlsController> _logger;
         private static readonly Random getrandom = new Random();
         private readonly IBrowserDetector browserDetector;
+        private readonly UrlService urlService;
 
-        public UrlsController(ILogger<UrlsController> logger, IBrowserDetector browserDetector)
+        public UrlsController(ILogger<UrlsController> logger, IBrowserDetector browserDetector, UrlService urlService)
         {
             this.browserDetector = browserDetector;
             _logger = logger;
+            this.urlService = urlService;
         }
 
         public IActionResult Index()
         {
             var model = new HomeViewModel();
-            model.Urls = new List<Url>
-            {
-                new()
-                {
-                    ShortUrl = "ABCDE",
-                    Count = getrandom.Next(1, 10)
-                },
-                new()
-                {
-                    ShortUrl = "ABCDE",
-                    Count = getrandom.Next(1, 10)
-                },
-                new()
-                {
-                    ShortUrl = "ABCDE",
-                    Count = getrandom.Next(1, 10)
-                },
-            };
+            model.Urls = urlService.getAllUrls();
             model.NewUrl = new();
             return View(model);
         }
+
+
 
         [Route("/{url}")]
         public IActionResult Visit(string url) => new OkObjectResult($"{url}, {this.browserDetector.Browser.OS}, {this.browserDetector.Browser.Name}");
@@ -52,7 +40,7 @@ namespace HeyUrlChallengeCodeDotnet.Controllers
         [Route("urls/{url}")]
         public IActionResult Show(string url) => View(new ShowViewModel
         {
-            Url = new Url {ShortUrl = url, Count = getrandom.Next(1, 10)},
+            Url = new UrlModel {ShortUrl = url, Count = getrandom.Next(1, 10)},
             DailyClicks = new Dictionary<string, int>
             {
                 {"1", 13},
